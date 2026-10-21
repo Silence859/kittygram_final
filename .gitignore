@@ -150,3 +150,13 @@ media/
 
 # Others
 node_modules
+
+# Папки со статикой и медиа, создаваемые Django
+static/
+backend/static/
+
+# Локальные файлы базы данных
+db.sqlite3
+
+# Файлы сборки фронтенда
+frontend/build/
