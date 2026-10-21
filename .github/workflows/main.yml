@@ -52,18 +52,13 @@ jobs:
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v2
 
-      - name: Debug token
-        run: |
-          echo "Длина токена: ${#DH_TOKEN}"
-          echo "Первый символ: ${DH_TOKEN:0:1}"
-        env:
-          DH_TOKEN: ${{ secrets.DOCKER_PASSWORD }}
-
       - name: Login to Docker Hub
-        uses: docker/login-action@v3
-        with:
-          username: ${{ secrets.DOCKER_USERNAME }}
-          password: ${{ secrets.DOCKER_PASSWORD }}
+        env:
+          DH_USER: ${{ secrets.DOCKER_USERNAME }}
+          DH_TOKEN: ${{ secrets.DOCKER_PASSWORD }}
+        run: |
+          CLEAN_TOKEN=$(echo "$DH_TOKEN" | tr -d '[:space:]')
+          echo "$CLEAN_TOKEN" | docker login docker.io -u "$DH_USER" --password-stdin
 
       - name: Push backend to Docker Hub
         uses: docker/build-push-action@v4
