@@ -55,7 +55,7 @@ jobs:
           DH_USER: ${{ secrets.DOCKER_USERNAME }}
           DH_TOKEN: ${{ secrets.DOCKER_PASSWORD }}
         run: |
-          printf '%s' "$DH_TOKEN" | docker login docker.io -u "$DH_USER" --password-stdin
+          echo -n "$DH_TOKEN" | docker login docker.io -u "$DH_USER" --password-stdin
       - name: Push backend to Docker Hub
         uses: docker/build-push-action@v4
         with:
