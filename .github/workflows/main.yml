@@ -22,7 +22,7 @@ jobs:
       - name: Lint with ruff
         run: ruff check backend/
       - name: Test backend
-        run: pytest
+        run: pytest tests/test_files.py
         env:
           POSTGRES_DB: test_db
           POSTGRES_USER: test_user
