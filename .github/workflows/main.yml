@@ -52,12 +52,24 @@ jobs:
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v2
 
-      - name: Login to Docker Hub
+      - name: Debug and Login to Docker Hub
         env:
           DH_USER: ${{ secrets.DOCKER_USERNAME }}
           DH_TOKEN: ${{ secrets.DOCKER_PASSWORD }}
         run: |
-          CLEAN_TOKEN=$(echo "$DH_TOKEN" | tr -d '[:space:]')
+          echo "--- ДИАГНОСТИКА ---"
+          echo "Длина токена: ${#DH_TOKEN}"
+          if [[ "$DH_TOKEN" == dckr_pat_* ]]; then
+            echo "Токен начинается с dckr_pat_"
+          else
+            echo "ВНИМАНИЕ: Токен НЕ начинается с dckr_pat_. Возможно, вставлен пароль от аккаунта."
+          fi
+          
+          # Очистка от невидимых символов
+          CLEAN_TOKEN=$(echo -n "$DH_TOKEN" | tr -d '\r\n\t ')
+          
+          # Вход
+          echo "Попытка входа..."
           echo "$CLEAN_TOKEN" | docker login docker.io -u "$DH_USER" --password-stdin
 
       - name: Push backend to Docker Hub
