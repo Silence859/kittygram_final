@@ -49,6 +49,12 @@ jobs:
     steps:
       - uses: actions/checkout@v3
       - name: Set up Docker Buildx
+      - name: Debug token
+        run: |
+          echo "Длина токена: ${#DH_TOKEN}"
+          echo "Первый символ: ${DH_TOKEN:0:1}"
+        env:
+          DH_TOKEN: ${{ secrets.DOCKER_PASSWORD }}
         uses: docker/setup-buildx-action@v2
       - name: Login to Docker Hub
         env:
