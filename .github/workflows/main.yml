@@ -48,32 +48,37 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
+
       - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v2
+
       - name: Debug token
         run: |
           echo "Длина токена: ${#DH_TOKEN}"
           echo "Первый символ: ${DH_TOKEN:0:1}"
         env:
           DH_TOKEN: ${{ secrets.DOCKER_PASSWORD }}
-        uses: docker/setup-buildx-action@v2
+
       - name: Login to Docker Hub
-        env:
-          DH_USER: ${{ secrets.DOCKER_USERNAME }}
-          DH_TOKEN: ${{ secrets.DOCKER_PASSWORD }}
-        run: |
-          echo -n "$DH_TOKEN" | docker login docker.io -u "$DH_USER" --password-stdin
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
+
       - name: Push backend to Docker Hub
         uses: docker/build-push-action@v4
         with:
           context: ./backend
           push: true
           tags: ${{ secrets.DOCKER_USERNAME }}/kittygram_backend:latest
+
       - name: Push frontend to Docker Hub
         uses: docker/build-push-action@v4
         with:
           context: ./frontend
           push: true
           tags: ${{ secrets.DOCKER_USERNAME }}/kittygram_frontend:latest
+
       - name: Push gateway to Docker Hub
         uses: docker/build-push-action@v4
         with:
